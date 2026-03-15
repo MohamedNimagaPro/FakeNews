@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Monde.fr - Prototype</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500;700&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+    <style>
+        /* --- Variables et Reset --- */
+        :root {
+            --bg-black: #111;
+            --bg-dark-gray: #222;
+            --brand-yellow: #f5c518;
+            --text-dark: #1a1a1a;
+            --text-gray: #555;
+            --border-color: #e5e5e5;
+            --live-red: #d32f2f;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; color: var(--text-dark); background-color: #fff; line-height: 1.5; }
+        a { text-decoration: none; color: inherit; cursor: pointer; }
+        a:hover { opacity: 0.8; }
+        ul { list-style: none; }
+
+        /* --- En-tête Supérieur (Noir) --- */
+        .top-header { background-color: var(--bg-black); color: #fff; display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; font-size: 0.85rem; }
+        .top-header-left, .top-header-right { display: flex; align-items: center; gap: 20px; font-weight: 500; }
+        .logo-main { font-family: 'UnifrakturMaguntia', cursive; font-size: 2.5rem; letter-spacing: 1px; text-align: center; }
+        .btn-abonner { background-color: var(--brand-yellow); color: #000; padding: 6px 16px; border-radius: 2px; font-weight: bold; }
+
+        /* --- Barre de Navigation (Gris Foncé) --- */
+        .nav-header { background-color: var(--bg-dark-gray); color: #ccc; display: flex; align-items: center; padding: 12px 20px; font-size: 0.85rem; border-top: 1px solid #333; }
+        .nav-header .menu-icon { display: flex; align-items: center; gap: 8px; color: #fff; font-weight: bold; margin-right: 20px; }
+        .nav-links { display: flex; gap: 15px; overflow-x: auto; white-space: nowrap; }
+        .nav-links a.active { color: #fff; font-weight: bold; }
+
+        /* --- Bandeau "En Direct" (Ticker) --- */
+        .news-ticker { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--border-color); gap: 20px; font-size: 0.85rem; overflow-x: auto; white-space: nowrap; }
+        .ticker-item { border-right: 1px solid var(--border-color); padding-right: 20px; min-width: 200px; }
+        .ticker-item:last-child { border-right: none; }
+        .ticker-time { font-weight: bold; margin-bottom: 4px; display: block; }
+        .ticker-time.alert { color: var(--live-red); }
+        .btn-voir-plus { margin-left: auto; padding: 6px 12px; border: 1px solid #ccc; border-radius: 20px; font-weight: bold; font-size: 0.8rem; }
+
+        /* --- Conteneur Principal --- */
+        .main-container { max-width: 1100px; margin: 30px auto; padding: 0 20px; display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
+
+        /* --- Article Principal (Gauche) --- */
+        .article-une .live-tag { color: var(--live-red); font-weight: bold; font-size: 0.9rem; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+        .article-une .live-tag::before { content: ""; display: block; width: 6px; height: 6px; background-color: var(--live-red); border-radius: 50%; }
+        .article-une h1 { font-family: 'Playfair Display', serif; font-size: 2.2rem; line-height: 1.2; margin-bottom: 20px; color: #000; }
+        
+        /* Conteneur pour l'image */
+        .image-box { width: 100%; background-color: #e0e0e0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .image-box img { width: 100%; height: auto; display: block; }
+        
+        .credit-photo { text-align: right; font-size: 0.65rem; color: #999; text-transform: uppercase; margin-top: 5px; letter-spacing: 0.5px; }
+        .article-une .chapeau { font-size: 1.05rem; line-height: 1.6; color: var(--text-dark); margin-top: 15px; margin-bottom: 20px; font-weight: 500;}
+        .related-links { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; border-top: 1px solid var(--border-color); padding-top: 15px; font-size: 0.9rem; font-weight: bold; line-height: 1.3; }
+
+        /* --- Colonne de Droite (Reportage) --- */
+        .article-secondaire { text-align: center; }
+        .article-secondaire .meta-tag { font-size: 0.75rem; color: var(--text-gray); text-transform: uppercase; margin: 15px 0 10px 0; letter-spacing: 1px; }
+        .article-secondaire .meta-tag span { display: block; font-style: italic; text-transform: none; color: #000; margin-top: 3px; }
+        .article-secondaire h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; line-height: 1.3; margin-bottom: 15px; color: #000; }
+        .yellow-square { display: inline-block; width: 12px; height: 12px; background-color: var(--brand-yellow); margin-right: 5px; vertical-align: middle; }
+        .article-secondaire .chapeau { font-size: 0.95rem; color: var(--text-gray); margin-bottom: 15px; }
+        .reading-time { font-size: 0.8rem; color: #888; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 20px; }
+
+        /* Bloc Service Le Monde */
+        .service-bloc { text-align: left; }
+        .service-bloc h3 { font-size: 0.8rem; color: #0056b3; text-transform: uppercase; margin-bottom: 5px; }
+        .service-bloc h4 { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 5px; }
+
+        @media (max-width: 850px) {
+            .main-container { grid-template-columns: 1fr; }
+            .news-ticker { overflow-x: scroll; }
+            .related-links { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-header">
+        <div class="top-header-left">
+            <span>≡ Le journal</span>
+            <span>⊞ Services</span>
+        </div>
+        <div class="logo-main">Le Monde</div>
+        <div class="top-header-right">
+            <span>FR | EN</span>
+            <a href="#" class="btn-abonner">S'abonner</a>
+            <span>👤</span>
+        </div>
+    </header>
+
+    <nav class="nav-header">
+        <div class="menu-icon">≡ Menu</div>
+        <div>🔍</div>
+        <div class="nav-links" style="margin-left: 20px;">
+            <a href="#">Culture</a>
+            <a href="#" class="active">Musique</a>
+            <a href="#">International</a>
+            <a href="#">Politique</a>
+            <a href="#">Société</a>
+            <a href="#">Économie</a>
+        </div>
+    </nav>
+
+    <div class="news-ticker">
+        <div class="ticker-item">
+            <span class="ticker-time alert">17:02 ALERTE</span>
+            Chelsea VS PSG : Le CHOC Des Champions
+        </div>
+        <div class="ticker-item">
+            <span class="ticker-time alert">16:15 • LIVE EN COURS</span>
+            Suivez les dernières informations en direct
+        </div>
+        <a href="#" class="btn-voir-plus">Voir plus ></a>
+    </div>
+
+    <main class="main-container">
+        
+        <article class="article-une">
+            <div class="live-tag">LIVE</div>
+            
+            <h1>Séisme dans le rap français : Jolagreen23 s'éteint en pleine ascension.</h1>
+            
+            <div class="image-box">
+                <img src="votre-image.jpg" alt="Description de l'image">
+            </div>
+            
+            <div class="credit-photo">[CRÉDIT DE VOTRE PHOTO]</div>
+            
+            <p class="chapeau">C’est un séisme qui secoue l’industrie musicale ce matin. Quelques heures seulement après la sortie très attendue de son nouvel album, le rappeur Jolagreen23, figure de proue de la nouvelle scène drill et alternative française, est décédé tragiquement dans la nuit.
+
+
+Selon les premières informations recueillies, l'artiste aurait été victime d'un grave accident de la route sur l’autoroute A1, alors qu’il rentrait d’une soirée de lancement organisée pour ses fans et ses proches. Le véhicule de l'artiste aurait fait une sortie de route suite à une défaillance technique majeure, percutant les barrières de sécurité. Malgré l’intervention rapide des secours, le jeune prodige de 24 ans a été déclaré mort sur les lieux.
+
+
+Jolagreen23 n’était pas qu’un simple rappeur ; il était considéré par beaucoup comme l’architecte d’un nouveau son, mêlant une énergie brute à des textes d’une précision chirurgicale.
+
+ Parti de rien, il avait réussi à imposer son univers visuel et sonore en un temps record.
+ Son album, disponible depuis minuit, est déjà en train de battre des records d'écoute, transformant ce qui devait être une célébration en un hommage national.
+
+« Nous avons perdu un visionnaire. Il n'a même pas eu le temps de voir l'accueil que le public a réservé à son travail. C'est d'une cruauté sans nom », a déclaré son manager lors d'une brève allocution.
+
+Le monde de la musique réagit
+Sur les réseaux sociaux, les hommages de ses pairs ne se sont pas fait attendre. De la drill au rap plus traditionnel, tous saluent un artiste qui a brûlé la vie par les deux bouts pour l'amour de son art. Des rassemblements spontanés sont déjà signalés devant les locaux de son label, où des fans viennent déposer fleurs et bougies.
+
+L'industrie perd aujourd'hui l'un de ses plus brillants espoirs, laissant derrière lui un album qui résonne désormais comme un adieu prémédité.</p>
+            
+            <div class="related-links">
+                <div><span class="yellow-square"></span>Les Victoires de la Musique 2026 : un palmarès sous le signe de la diversité</div>
+                <div><span class="yellow-square"></span>Comment l'intelligence artificielle redessine l'industrie musicale française</div>
+                <div><span class="yellow-square"></span>Festivals d'été : les organisateurs face au défi de la hausse des coûts de production</div>
+            </div>
+        </article>
+
+        <aside class="article-secondaire">
+            <div class="image-box" style="aspect-ratio: 4/3; color:#888;"><img src="Poulailler.jpg" alt="Poulailler"></div>
+            
+            <div class="meta-tag">Reportage <span>Agathe Beaudouin</span></div>
+            
+            <h2><span class="yellow-square"></span>Quand les usines à œufs remplacent les poulaillers : plongée dans ces structures XXL qui exploitent des centaines de milliers de poules</h2>
+            
+            <p class="chapeau">Chaque année en France, 16 milliards d'œufs sont pondus. Pour répondre à la demande croissante des consommateurs...</p>
+            
+            <div class="reading-time">6 min de lecture</div>
+        </aside>
+
+    </main>
+
+</body>
+</html>
